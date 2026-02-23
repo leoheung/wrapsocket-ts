@@ -1,6 +1,6 @@
 {
   "name": "wrapsocket-ts",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Production-grade WebSocket client with auto-reconnection, heartbeat, and state management",
   "type": "module",
   "main": "dist/wrapsocket.js",
