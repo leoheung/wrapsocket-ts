@@ -37,13 +37,14 @@ export interface WrapSocketEvents {
   online: () => void;
   offline: () => void;
   visibilityChange: (visible: boolean) => void;
+  connected: (id: string) => void;
 }
 
 export type EventHandler<K extends keyof WrapSocketEvents> =
   WrapSocketEvents[K];
 
 export interface Message {
-  type: "event" | "ack" | "heartbeat" | "pong";
+  type: "event" | "ack" | "heartbeat" | "pong" | "connected";
   id: string;
   data: unknown;
   timestamp: number;

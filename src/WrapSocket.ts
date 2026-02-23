@@ -28,6 +28,7 @@ export class WrapSocket {
   private isManualClose = false;
   private wasOnline = true;
   private wasVisible = true;
+  private connectionId: string | null = null;
 
   constructor(options: WrapSocketOptions) {
     this.url = options.url;
@@ -48,7 +49,7 @@ export class WrapSocket {
     this.heartbeatManager = new HeartbeatManager(
       () => this.sendPing(),
       () => this.handleHeartbeatTimeout(),
-      heartbeatOpts
+      heartbeatOpts,
     );
     this.networkMonitor = new NetworkMonitor();
     this.visibilityMonitor = new VisibilityMonitor();
@@ -68,6 +69,10 @@ export class WrapSocket {
 
   get isConnecting(): boolean {
     return this.state === "connecting" || this.state === "reconnecting";
+  }
+
+  get id(): string | null {
+    return this.connectionId;
   }
 
   connect(): void {
@@ -132,6 +137,13 @@ export class WrapSocket {
         return;
       }
 
+      if (data.type === "connected") {
+        this.connectionId = data.id;
+        this.emit("connected", data.id);
+        this.log("Received connection ID:", data.id);
+        return;
+      }
+
       this.emit("message", event);
     } catch {
       this.emit("message", event);
@@ -172,7 +184,7 @@ export class WrapSocket {
       this.log(
         "Reconnect failed after",
         this.reconnectManager.currentAttempt,
-        "attempts"
+        "attempts",
       );
       return;
     }
@@ -187,7 +199,7 @@ export class WrapSocket {
         delay,
         "ms (attempt",
         this.reconnectManager.currentAttempt,
-        ")"
+        ")",
       );
     }
   }
@@ -214,7 +226,7 @@ export class WrapSocket {
         this.emit("offline");
         this.log("Network offline");
         this.wasOnline = false;
-      }
+      },
     );
   }
 
@@ -236,6 +248,7 @@ export class WrapSocket {
     this.isManualClose = true;
     this.reconnectManager.stop();
     this.heartbeatManager.stop();
+    this.connectionId = null;
 
     if (this.ws) {
       this.ws.close(1000, "Manual disconnect");
