@@ -1,19 +1,21 @@
 {
   "name": "wrapsocket-ts",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "description": "Production-grade WebSocket client with auto-reconnection, heartbeat, and state management",
   "type": "module",
-  "main": "dist/wrapsocket.js",
-  "module": "dist/wrapsocket.js",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/wrapsocket.js",
-      "types": "./dist/index.d.ts"
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "scripts": {
     "build": "tsc && esbuild src/index.ts --bundle --format=esm --outfile=dist/wrapsocket.js",
